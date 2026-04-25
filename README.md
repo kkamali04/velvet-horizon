@@ -4,14 +4,29 @@
 
 ---
 
-| MC 1.21.1 | NeoForge | ATM10 | 500+ Mods | 100 Players |
-|-----------|----------|-------|-----------|-------------|
+| MC 1.21.1 | NeoForge 21.1.224 | ATM10 v6.6 | 504 Client Mods | 100 Players |
+|-----------|-------------------|------------|-----------------|-------------|
+
+---
+
+## Server Info
+
+| Field | Value |
+|-------|-------|
+| Server IP | `178.104.226.110` |
+| Domain | `play.cognesia.live` (DNS pending) |
+| Discord | [discord.gg/sM8yXGRQ](https://discord.gg/sM8yXGRQ) |
+| Version | Minecraft 1.21.1 |
+| Modloader | NeoForge 21.1.224 |
+| Modpack | All the Mods 10 v6.6 |
+| Client Mods | 504 (478 ATM10 + 22 auto-downloaded + 4 manual) |
+| Server Mods | 449 |
 
 ---
 
 ## Quick Start
 
-Run one command to download all custom mods automatically.
+Run one command to check Java, download all 22 custom mods, and set up your instance.
 
 **Windows**
 ```bat
@@ -23,11 +38,6 @@ python setup.py
 python3 setup.py
 ```
 
-**One-liner (any platform)**
-```bash
-curl -sL https://raw.githubusercontent.com/kiankamali/velvet-horizon/main/setup.py | python3
-```
-
 **Custom mods directory**
 ```bash
 python3 setup.py --mods-dir /path/to/your/mods
@@ -35,38 +45,27 @@ python3 setup.py --mods-dir /path/to/your/mods
 
 The script will:
 1. Verify Java 21+ is installed
-2. Guide you through ATLauncher setup if needed
-3. Download all custom mods straight from Modrinth
-4. Print step-by-step instructions to finish in ATLauncher
+2. Download all 22 custom mods directly from Modrinth
+3. Create the correct instance folder structure
+4. Print step-by-step instructions to finish setup in ATLauncher
 
 ---
 
 ## Features
 
-- **Voice Chat** — proximity voice chat with Simple Voice Chat
-- **Emotes** — full Emotecraft expression library
-- **Player Heads** — see faces next to chat messages with Chat Heads
-- **Minimap + World Map** — Xaero's Minimap and World Map
-- **Economy** — Lightman's Currency shop system
-- **Vehicles** — Automobility cars and Immersive Vehicles
-- **Pokemon** — full Cobblemon integration
-- **Mobs** — Mowzie's Mobs bosses and creatures
-- **Create Suite** — Create Aeronautics, Steam 'n' Rails, New Age, Power Loader, Design 'n' Decor
-- **Building** — Copycats+ and Slice & Dice
-- **Origins** — play as a unique race/class with Origins (NeoForge)
-- **Performance** — Distant Horizons LOD rendering for massive view distances
-- **AI NPCs** — CreatureChat for living, conversational NPCs
-
----
-
-## Server Info
-
-| Field | Value |
-|-------|-------|
-| Server IP | Coming Soon |
-| Discord | [discord.gg/sM8yXGRQ](https://discord.gg/sM8yXGRQ) |
-| Version | Minecraft 1.21.1 |
-| Modloader | NeoForge (via ATM10) |
+- **Create** — Create mod with Steam 'n' Rails, Aeronautics, New Age, Power Loader, and Design 'n' Decor
+- **Cobblemon** — full Pokemon integration
+- **Guns** — TaCZ (Timeless and Classics Zero) firearms system
+- **Vehicles** — Automobility cars and MTS (Minecraft Transport Simulator)
+- **Dragons** — Ice and Fire dragons, serpents, and mythical creatures
+- **Magic** — Iron's Spells 'n Spellbooks full magic system
+- **Economy** — Lightman's Currency shop and trading system
+- **Proximity Voice Chat** — Simple Voice Chat, talk to nearby players
+- **AI NPCs** — CreatureChat for living, conversational NPCs powered by AI
+- **Casino** — built-in gambling and games of chance
+- **Bounty System** — player bounties and rewards
+- **Distant Horizons** — LOD rendering for massive, beautiful view distances
+- **Performance** — 100 player capacity on dedicated hardware
 
 ---
 
@@ -83,18 +82,19 @@ If you prefer not to use the script:
 3. **Create an ATM10 instance**
    - Open ATLauncher → Packs tab
    - Search **All the Mods 10**
-   - Click **New Instance** → pick the latest 1.21.1 version → Install
+   - Click **New Instance** → select version **6.6** → Install
+   - Name it **Velvet Horizon**
 
 4. **Download custom mods manually**
    - Visit https://modrinth.com and search each mod slug listed in `setup.py`
-   - Drop the `.jar` files into:
+   - Drop the `.jar` files into your instance mods folder:
      - Windows: `%APPDATA%\ATLauncher\instances\VelvetHorizon\mods\`
      - Mac: `~/Library/Application Support/ATLauncher/instances/VelvetHorizon/mods/`
      - Linux: `~/.atlauncher/instances/VelvetHorizon/mods/`
 
 5. **Launch and connect**
    - Open ATLauncher → Instances → Play
-   - Multiplayer → Add Server → paste the server IP
+   - Multiplayer → Add Server → enter `178.104.226.110`
 
 ---
 
@@ -109,27 +109,42 @@ If you prefer not to use the script:
 | Xaero's World Map | Modrinth |
 | Lightman's Currency | Modrinth |
 | Automobility | Modrinth |
-| Immersive Vehicles | Modrinth |
+| Immersive Vehicles (MTS) | Modrinth |
 | Cobblemon | Modrinth |
-| Mowzie's Mobs | Modrinth |
+| Ice and Fire | Modrinth |
+| Iron's Spells 'n Spellbooks | Modrinth |
+| TaCZ (Timeless and Classics Zero) | Modrinth |
 | Create: Aeronautics | Modrinth |
-| Copycats+ | Modrinth |
+| Create: Steam 'n' Rails | Modrinth |
 | Create: New Age | Modrinth |
-| Slice & Dice | Modrinth |
 | Create: Power Loader | Modrinth |
-| Enigmatic Legacy+ | Modrinth |
+| Create: Design 'n' Decor | Modrinth |
+| Copycats+ | Modrinth |
 | Distant Horizons | Modrinth |
 | CreatureChat | Modrinth |
-| TACZ (1.21.1) | Modrinth |
-| Create: Steam 'n' Rails (1.21.1) | Modrinth |
 | Origins (NeoForge) | Modrinth |
-| Create: Design 'n' Decor | Modrinth |
+| Slice & Dice | Modrinth |
+
+---
+
+## Server Specs
+
+| Field | Value |
+|-------|-------|
+| Provider | Hetzner |
+| Server | cax31 (ARM64) |
+| RAM | 16 GB |
+| OS | Ubuntu 24.04 |
+| Java | OpenJDK 21 |
+| JVM Heap | 8–12 GB |
+| Port | 25565 |
+| Path | `/opt/minecraft/velvet-horizon/` |
 
 ---
 
 ## Community
 
-Join the Discord to get the live server IP, report issues, and connect with other players.
+Join the Discord to get announcements, report issues, and connect with other players.
 
 **Discord:** https://discord.gg/sM8yXGRQ
 
