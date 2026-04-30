@@ -66,10 +66,10 @@ echo  [OK] VelvetHorizon instance found!
 
 echo.
 echo  [4/5] Downloading custom mods pack...
-echo        (295 MB - may take a few minutes)
+echo        (322 MB - may take a few minutes)
 echo.
 
-set "ZIP_URL=https://github.com/kkamali04/velvet-horizon/releases/download/v1.0.0/velvet-horizon-custom-mods.zip"
+set "ZIP_URL=https://github.com/kkamali04/velvet-horizon/releases/download/v1.0.1/velvet-horizon-custom-mods-v1.0.1.zip"
 set "ZIP_FILE=%TEMP%\velvet-horizon-custom-mods.zip"
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^

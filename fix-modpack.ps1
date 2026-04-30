@@ -1,4 +1,8 @@
 # Velvet Horizon - One-Click Modpack Fix
+# NOTE: If you downloaded v1.0.1+ of the custom mods via join.bat, you do NOT need this script.
+#       The v1.0.1 release already ships with the fixed mod set (no broken mods, Sodium/Citadel/Sable/Create-6.0.10 included).
+#       This script is only needed if you downloaded v1.0.0 of the custom mods.
+#
 # Usage: right-click this file -> Run with PowerShell
 # Or in PowerShell: powershell -ExecutionPolicy Bypass -File fix-modpack.ps1
 
