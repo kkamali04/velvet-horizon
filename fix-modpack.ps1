@@ -72,6 +72,34 @@ if (-not (Test-Path $createPath)) {
 }
 
 Write-Host ""
-Write-Host "[4/4] Done. Launch ATLauncher -> VelvetHorizon -> Multiplayer -> play.cognesia.live" -ForegroundColor Green
+Write-Host "[4/6] Downloading Citadel 2.7.0 (required by Alex's Mobs)..."
+$citadelPath = Join-Path $mods 'citadel-2.7.0-1.21.1.jar'
+if (-not (Test-Path $citadelPath)) {
+    try {
+        Invoke-WebRequest -Uri 'https://cdn.modrinth.com/data/jJfV67b1/versions/uzrkhBpn/citadel-2.7.0-1.21.1.jar' -OutFile $citadelPath -UseBasicParsing
+        Write-Host "      Citadel installed"
+    } catch {
+        Write-Host "      [!] Citadel download failed. Manual: https://modrinth.com/mod/citadel/versions?l=neoforge&g=1.21.1" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "      Citadel already present"
+}
+
+Write-Host ""
+Write-Host "[5/6] Downloading Sable 1.2.2 (required by Aeronautics)..."
+$sablePath = Join-Path $mods 'sable-neoforge-1.21.1-1.2.2.jar'
+if (-not (Test-Path $sablePath)) {
+    try {
+        Invoke-WebRequest -Uri 'https://cdn.modrinth.com/data/T9PomCSv/versions/3FMsUjO4/sable-neoforge-1.21.1-1.2.2.jar' -OutFile $sablePath -UseBasicParsing
+        Write-Host "      Sable installed"
+    } catch {
+        Write-Host "      [!] Sable download failed. Manual: https://modrinth.com/mod/sable/versions?l=neoforge&g=1.21.1" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "      Sable already present"
+}
+
+Write-Host ""
+Write-Host "[6/6] Done. Launch ATLauncher -> VelvetHorizon -> Multiplayer -> play.cognesia.live" -ForegroundColor Green
 Write-Host ""
 Read-Host "Press Enter to exit"
