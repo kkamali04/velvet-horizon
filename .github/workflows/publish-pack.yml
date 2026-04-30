@@ -1,0 +1,210 @@
+name: Publish Modpack (.mrpack)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packwiz/**"
+  workflow_dispatch:
+    inputs:
+      force_version_suffix:
+        description: "Append +build.<sha> even if tag does not exist yet"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+permissions:
+  contents: write   # needed by softprops/action-gh-release and gh-pages push
+  pages: write
+  id-token: write
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 1: Build and publish the .mrpack
+  # ──────────────────────────────────────────────────────────────────────────
+  publish-mrpack:
+    name: Build & Publish .mrpack
+    runs-on: ubuntu-latest
+
+    outputs:
+      version_tag: ${{ steps.resolve_version.outputs.version_tag }}
+      mrpack_name: ${{ steps.resolve_version.outputs.mrpack_name }}
+
+    steps:
+      # 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history needed for gh-pages push later
+
+      # 2. Install packwiz (precompiled Linux binary — faster than go install) ──
+      - name: Install packwiz
+        run: |
+          set -euo pipefail
+          PACKWIZ_VERSION="0.17.4"
+          BINARY_URL="https://github.com/packwiz/packwiz/releases/download/v${PACKWIZ_VERSION}/packwiz_linux_amd64.tar.gz"
+          curl -fsSL "$BINARY_URL" -o packwiz.tar.gz
+          tar -xzf packwiz.tar.gz packwiz
+          chmod +x packwiz
+          sudo mv packwiz /usr/local/bin/packwiz
+          packwiz --version
+
+      # 3. Refresh index (updates hashes for any changed files) ──────────────
+      - name: Refresh packwiz index
+        run: |
+          cd packwiz
+          packwiz refresh
+
+      # 4. Export .mrpack ─────────────────────────────────────────────────────
+      - name: Export .mrpack
+        run: bash .github/scripts/export-mrpack.sh
+
+      # 5. Resolve version / tag ──────────────────────────────────────────────
+      - name: Resolve version tag
+        id: resolve_version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_SUFFIX: ${{ github.event.inputs.force_version_suffix || 'false' }}
+        run: |
+          set -euo pipefail
+
+          # Read version from pack.toml  (line: version = "x.y.z")
+          PACK_VERSION=$(grep -m1 '^version\s*=' packwiz/pack.toml \
+            | sed 's/.*=\s*"\(.*\)"/\1/' | tr -d '[:space:]')
+          echo "Pack version from pack.toml: $PACK_VERSION"
+
+          BASE_TAG="v${PACK_VERSION}"
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          # Check if that release tag already exists on GitHub
+          TAG_EXISTS=$(gh release view "$BASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --json tagName --jq '.tagName' 2>/dev/null || echo "")
+
+          if [ -n "$TAG_EXISTS" ] || [ "$FORCE_SUFFIX" = "true" ]; then
+            VERSION_TAG="${BASE_TAG}+build.${SHORT_SHA}"
+            echo "Tag $BASE_TAG already exists — using $VERSION_TAG"
+          else
+            VERSION_TAG="$BASE_TAG"
+          fi
+
+          # GitHub refs/tags can't contain '+'; replace with '-'
+          SAFE_TAG=$(echo "$VERSION_TAG" | tr '+' '-')
+
+          MRPACK_NAME="velvet-horizon-${PACK_VERSION}.mrpack"
+
+          echo "version_tag=${SAFE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "mrpack_name=${MRPACK_NAME}"  >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: $SAFE_TAG | Asset: $MRPACK_NAME"
+
+      # 6. Rename artifact to canonical name ─────────────────────────────────
+      - name: Rename .mrpack to canonical filename
+        run: |
+          # export-mrpack.sh places the file at packwiz/velvet-horizon.mrpack
+          mv packwiz/velvet-horizon.mrpack "packwiz/${{ steps.resolve_version.outputs.mrpack_name }}"
+
+      # 7. Create / update the versioned GitHub Release ──────────────────────
+      - name: Publish versioned GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.resolve_version.outputs.version_tag }}
+          name: "Velvet Horizon ${{ steps.resolve_version.outputs.version_tag }}"
+          body: |
+            Automated modpack release built from commit ${{ github.sha }}.
+
+            **How to install:**
+            1. Open Prism Launcher (or any Modrinth-compatible launcher).
+            2. Import the attached `.mrpack` file, **or** point your launcher at the stable URL:
+               `https://kkamali04.github.io/velvet-horizon/velvet-horizon.mrpack`
+          files: packwiz/${{ steps.resolve_version.outputs.mrpack_name }}
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 8. Update stable "latest" asset ──────────────────────────────────────
+      #    We overwrite the `latest` pre-release so the launcher always has a
+      #    stable, non-version-changing URL to subscribe to.
+      - name: Update latest pre-release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          MRPACK_PATH="packwiz/${{ steps.resolve_version.outputs.mrpack_name }}"
+          LATEST_ASSET="velvet-horizon.mrpack"
+
+          # Delete existing `latest` release if present (ignore error if absent)
+          gh release delete latest \
+            --repo "$GITHUB_REPOSITORY" \
+            --yes 2>/dev/null || true
+
+          # Re-create `latest` as a pre-release so it doesn't show as "newest"
+          gh release create latest \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Latest Build (auto-updated)" \
+            --notes "Stable pointer to the most recent build. Always updated on every push to main." \
+            --prerelease \
+            "$MRPACK_PATH#${LATEST_ASSET}"
+
+      # 9. Upload mrpack as workflow artifact (useful for debugging) ──────────
+      - name: Upload mrpack artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: velvet-horizon-mrpack
+          path: packwiz/${{ steps.resolve_version.outputs.mrpack_name }}
+          retention-days: 30
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 2: Publish packwiz/ folder to GitHub Pages
+  # (runs in parallel with publish-mrpack; no dependency)
+  # ──────────────────────────────────────────────────────────────────────────
+  publish-pages:
+    name: Publish packwiz/ to GitHub Pages
+    runs-on: ubuntu-latest
+    # Don't block the pack release if Pages deployment fails
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install packwiz
+        run: |
+          set -euo pipefail
+          PACKWIZ_VERSION="0.17.4"
+          BINARY_URL="https://github.com/packwiz/packwiz/releases/download/v${PACKWIZ_VERSION}/packwiz_linux_amd64.tar.gz"
+          curl -fsSL "$BINARY_URL" -o packwiz.tar.gz
+          tar -xzf packwiz.tar.gz packwiz
+          chmod +x packwiz
+          sudo mv packwiz /usr/local/bin/packwiz
+          packwiz --version
+
+      - name: Refresh packwiz index
+        run: |
+          cd packwiz
+          packwiz refresh
+
+      - name: Export .mrpack for Pages
+        run: bash .github/scripts/export-mrpack.sh
+
+      # Place mrpack at the Pages root so
+      # https://kkamali04.github.io/velvet-horizon/velvet-horizon.mrpack works
+      - name: Stage Pages content
+        run: |
+          mkdir -p _site
+          cp -r packwiz/* _site/
+          # Ensure the mrpack is at the stable filename
+          cp packwiz/velvet-horizon.mrpack _site/velvet-horizon.mrpack 2>/dev/null || true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

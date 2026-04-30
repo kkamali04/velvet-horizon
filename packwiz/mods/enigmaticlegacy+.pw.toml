@@ -1,0 +1,13 @@
+name = "Enigmatic Legacy+"
+filename = "enigmaticlegacyplus-1.21.1-0.6.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/oIjj1Fan/versions/ErPhQo57/enigmaticlegacyplus-1.21.1-0.6.0.jar"
+hash-format = "sha512"
+hash = "ecc69bbc4cdb722af2ea6ccd56e0c3821754b8019288f0a608fd953f8257a5c7ccbaaaf8d3e5a946086ea20e336ec05933caa1a4a5a9aec58a7b988ca7fdedc6"
+
+[update]
+[update.modrinth]
+mod-id = "oIjj1Fan"
+version = "ErPhQo57"

@@ -1,0 +1,13 @@
+name = "Origins (NeoForge)"
+filename = "origins-0.1-alpha.4.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/QaMa6tXQ/versions/DHPbMQto/origins-0.1-alpha.4.jar"
+hash-format = "sha512"
+hash = "4f6e02350dfc5e215ac89d2abbfd52ead955bed6a9a94accbcc2cfaae7fa038b3ea3ef97e6e2d64f36da49e43f86758523cc569e642a330ea018865dc9f3974c"
+
+[update]
+[update.modrinth]
+mod-id = "QaMa6tXQ"
+version = "DHPbMQto"

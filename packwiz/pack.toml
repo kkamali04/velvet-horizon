@@ -1,0 +1,13 @@
+name = "Velvet Horizon"
+author = "Kian Kamali"
+version = "1.0.0"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "72c930d62040be1ebf229c46113d6e64093cda06c3042fbfe0cd97fa152152a7"
+
+[versions]
+minecraft = "1.21.1"
+neoforge = "21.1.228"

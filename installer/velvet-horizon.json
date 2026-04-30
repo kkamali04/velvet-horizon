@@ -1,0 +1,11 @@
+{
+  "_header": "Velvet Horizon Launcher CLI — see github.com/kkamali04/velvet-horizon",
+  "pack_url": "https://kkamali04.github.io/velvet-horizon/packwiz/pack.toml",
+  "mc_version": "1.21.1",
+  "neoforge_version": "21.1.224",
+  "game_dir": ".velvet-horizon",
+  "_optional_resource_packs_note": "TODO: populate with objects containing name, url, description",
+  "optional_resource_packs": [],
+  "_optional_shaders_note": "TODO: populate with objects containing name, url, description",
+  "optional_shaders": []
+}
